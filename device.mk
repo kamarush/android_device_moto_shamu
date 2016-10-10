@@ -88,6 +88,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:system/etc/permissions/android.hardware.opengles.aep.xml \
     frameworks/native/data/etc/android.software.midi.xml:system/etc/permissions/android.software.midi.xml
 
+# Google Bootanim
+PRODUCT_COPY_FILES += \
+	device/moto/shamu/bootanimation.zip:system/media/bootanimation.zip
+
 # For GPS
 PRODUCT_COPY_FILES += \
     device/moto/shamu/sec_config:system/etc/sec_config
@@ -163,24 +167,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     media.aac_51_output_enabled=true \
-    persist.audio.dualmic.config=endfire \
-    persist.audio.fluence.voicecall=true \
-    persist.audio.fluence.voicerec=false \
-    persist.audio.fluence.speaker=false \
     ro.audio.monitorRotation=true
-
-# DRM
-PRODUCT_PROPERTY_OVERRIDES += \
-    drm.service.enabled=true
-
-# facelock props
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.facelock.black_timeout=400 \
-    ro.facelock.det_timeout=1500 \
-    ro.facelock.rec_timeout=2500 \
-    ro.facelock.lively_timeout=2500 \
-    ro.facelock.est_max_time=600 \
-    ro.facelock.use_intro_anim=false
 
 # Audio effects
 PRODUCT_PACKAGES += \
@@ -241,10 +228,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.radio.apm_sim_not_pwdn=1 \
     persist.radio.no_wait_for_card=1 \
-    persist.radio.sib16_support=1 \
-    persist.data.qmi.adb_logmask=0 \
-    persist.radio.alt_mbn_name=tmo_alt.mbn
-    persist.rcs.supported=0
     persist.radio.data_no_toggle=1
 
 #Reduce IMS logging
@@ -424,6 +407,57 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     audio_hal.period_size=192
 
+# Set correct voice call audio property values
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.config.vc_call_vol_steps=6 \
+    persist.audio.dualmic.config=endfire \
+    ro.qc.sdk.audio.fluencetype=fluence \
+    persist.audio.fluence.voicecall=true \
+    persist.audio.fluence.voicecomm=false \
+    persist.audio.fluence.voicerec=false \
+    persist.audio.fluence.speaker=false
+
+# Rich Communications Service is disabled
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.rcs.supported=0
+
+# Radio props
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.radio.sib16_support=1 \
+    ro.com.android.prov_mobiledata=false \
+    ro.com.android.dataroaming=false
+
+# data qmi adb logmask
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.data.qmi.adb_logmask=0
+
+# WiFi calling
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.data.iwlan.enable=true \
+    persist.radio.ignore_ims_wlan=1 \
+    persist.radio.data_con_rprt=1 \
+    persist.radio.alt_mbn_name=tmo_alt.mbn
+
+# drmservice props
+PRODUCT_PROPERTY_OVERRIDES += \
+    drm.service.enabled=true
+
+# facelock props
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.facelock.black_timeout=700 \
+    ro.facelock.det_timeout=2500 \
+    ro.facelock.rec_timeout=3500 \
+    ro.facelock.est_max_time=600
+
 # OEM Unlock reporting
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.oem_unlock_supported=1
+
+# Opengapps
+GAPPS_VARIANT := nano
+PRODUCT_PACKAGES += GoogleCamera
+$(call inherit-product, vendor/google/build/opengapps-packages.mk)
+
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.setupwizard.enterprise_mode=1 \
+	ro.atrace.core.services=com.google.android.gms,com.google.android.gms.ui,com.google.android.gms.persistent
